@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pizza LED Display</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    :root {
+      --bg-light: #f5f5f5;
+      --bg-dark: #000;
+      --text-light: #000;
+      --text-dark: #fff;
+      --led-color: red;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Share Tech Mono', monospace;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    .dark-mode { background: var(--bg-dark); color: var(--text-dark); }
+    .light-mode { background: var(--bg-light); color: var(--text-light); }
+
+    .toggle-btn {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #444;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      z-index: 10;
+      font-size: 1rem;
+      border-radius: 8px;
+    }
+
+    /* LED Frame */
+    .led-frame {
+      border: 3px dashed red;
+      padding: 8px;
+      margin: 70px auto 20px;
+      max-width: 95%;
+      background: #000;
+      box-shadow: 0 0 15px red;
+    }
+
+    .led-text {
+      font-size: clamp(1rem, 3vw, 2rem);
+      white-space: nowrap;
+      overflow: hidden;
+      color: red;
+      text-shadow: 0 0 5px red, 0 0 8px red;
+      animation: led-blink 2s step-start infinite;
+    }
+
+    @keyframes led-blink { 50% { opacity: 0.6; } }
+
+    .scroll-container { width: 100%; overflow: hidden; height: 2em; position: relative; }
+    .scroll-text {
+      position: absolute;
+      white-space: nowrap;
+      animation: scroll-left 12s linear infinite;
+    }
+    @keyframes scroll-left {
+      0% { left: 100%; }
+      100% { left: -100%; }
+    }
+
+    /* Menu */
+    .menu-container {
+      margin-top: 25px;
+      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .menu-item {
+      flex: 1 1 auto;
+      min-width: 120px;
+      font-size: clamp(0.9rem, 2.5vw, 1.5rem);
+      animation: floatUpDown 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatUpDown {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-10px); }
+    }
+
+    /* Pizza Slider */
+    .pizza-slider {
+      margin: 30px auto;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .pizza-track {
+      display: flex;
+      width: 400%;
+      animation: slideTrack 20s linear infinite;
+    }
+
+    .pizza-track img {
+      width: 25%;
+      max-width: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .pizza-track img:hover { transform: scale(1.05); }
+
+    @keyframes slideTrack {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-75%); }
+    }
+
+    /* WhatsApp Box */
+    .wa-box {
+      margin: 30px auto;
+      background: #111;
+      border: 2px dashed green;
+      padding: 15px;
+      text-align: center;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 10px;
+    }
+
+    .wa-box h3 { font-size: clamp(1rem, 2vw, 1.4rem); margin: 8px 0; }
+    .wa-box a { color: #0f0; text-decoration: none; font-weight: bold; }
+    .wa-box a:hover { text-decoration: underline; }
+
+    /* Background */
+    .bg-random {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.15;
+      filter: blur(3px);
+    }
+
+    /* Responsif tambahan */
+    @media (max-width: 768px) {
+      .toggle-btn { font-size: 0.9rem; padding: 6px 10px; }
+      .pizza-track { animation-duration: 15s; }
+    }
+
+    @media (max-width: 480px) {
+      .menu-container { flex-direction: column; gap: 10px; }
+      .led-frame { margin: 50px auto 15px; }
+      .pizza-track { animation-duration: 12s; }
+    }
+  </style>
+</head>
+<body class="dark-mode">
+
+  <div class="bg-random" id="bgRandom"></div>
+
+  <button class="toggle-btn" onclick="toggleMode()">🌙/☀️</button>
+
+  <div class="led-frame">
+    <div class="led-text scroll-container">
+      <div class="scroll-text" id="ledText"></div>
+    </div>
+  </div>
+
+  <div class="menu-container">
+    <div class="menu-item">🍕 LAUTAN KEJU</div>
+    <div class="menu-item">🍕 JURAGAN SAPI</div>
+    <div class="menu-item">🍕 BAKUL PITIK</div>
+    <div class="menu-item">🍕 LONDO KEMPLU</div>
+  </div>
+
+  <div class="pizza-slider">
+    <div class="pizza-track">
+      <img src="p1.png" alt="Pizza 1" />
+      <img src="p2.png" alt="Pizza 2" />
+      <img src="p3.png" alt="Pizza 3" />
+      <img src="p4.png" alt="Pizza 4" />
+    </div>
+  </div>
+
+  <div class="wa-box">
+    <h3>Kritik & Saran / Order Online:</h3>
+    <h3>088262212706</h3>
+    <p>Hubungi via WhatsApp 👉 <a href="https://wa.me/6281234567890" target="_blank">+62 812-3456-7890</a></p>
+  </div>
+
+  <script>
+    const teksArray = [
+      "✦ SEMUA ORANG BERHAK MAKAN  🍕  MURAH✦",
+      "✦ BEST SELLER - JURAGAN SAPI ✦",
+      "✦ Order ONLINE Via WA 📲 ✦",
+      "✦ Pizza Terlezat di Kota Ini! ✦",
+      "✦ SELAMAT DATANG PECINTA PIZZA ✦",
+      "✦ BEST SELLER - BAKUL PITIK ✦",
+      "✦ BEST SELLER - LONDO KEMPLU ✦"
+    ];
+
+    const ledText = document.getElementById("ledText");
+
+    function tampilkanTeksAcak() {
+      const teks = teksArray[Math.floor(Math.random() * teksArray.length)];
+      ledText.textContent = teks;
+    }
+
+    tampilkanTeksAcak();
+    setInterval(tampilkanTeksAcak, 10000);
+
+    function toggleMode() {
+      document.body.classList.toggle('dark-mode');
+      document.body.classList.toggle('light-mode');
+    }
+
+    const bgList = [
+      "bg1.jpg",
+      "https://images.unsplash.com/photo-1601924582975-7e96c7f2b29f",
+      "bg2.jpg",
+      "bg3.jpg"
+    ];
+
+    const bgRandom = document.getElementById("bgRandom");
+    const randomIndex = Math.floor(Math.random() * bgList.length);
+    bgRandom.style.backgroundImage = `url(${bgList[randomIndex]})`;
+  </script>
+</body>
+</html>
